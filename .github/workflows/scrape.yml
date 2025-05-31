@@ -1,0 +1,31 @@
+name: Run HLTB Scraper and Upload CSV
+
+on:
+  workflow_dispatch:  # allows manual trigger
+  schedule:
+    - cron: '0 6 * * 1'  # every Monday at 06:00 UTC
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🟢 Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: 📦 Install dependencies
+        run: npm install
+
+      - name: 🏃 Run scraper
+        run: npm start
+
+      - name: 📤 Upload CSV artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: howlongtobeat_csv
+          path: howlongtobeat_games.csv
