@@ -44,3 +44,9 @@ $ npm run start
 ```
 
 You'll start to see a new file `howlongtobeat_games.csv` being generated in the project folder.
+
+## Get the DB
+
+Simply open the last workflow run on https://github.com/julianxhokaxhiu/hltb-scraper/actions/workflows/scrape.yml and download the final artifact attached named `howlongtobeat_csv`.
+
+The workflow is scheduled to run weekly every Monday.
