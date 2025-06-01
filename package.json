@@ -7,8 +7,9 @@
     "start": "node index.js"
   },
   "license": "MIT",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^3.3.2",
+    "p-limit": "^6.2.0"
   }
 }
