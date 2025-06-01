@@ -4,9 +4,9 @@ This simple project uses https://howlongtobeat.com undocumented APIs from the se
 
 - Steam App ID ( `steam_id` )
 - Game Name ( `game_name` )
-- HLTB Main Story ( `comp_main` )
-- HLTB Main + Sides ( `comp_plus` )
-- HLTB Completionist ( `comp_100` )
+- HLTB Main Story ( `comp_main` ), in seconds
+- HLTB Main + Sides ( `comp_plus` ), in seconds
+- HLTB Completionist ( `comp_100` ), in seconds
 
 Here's an example extract you'll get when you run the project:
 
