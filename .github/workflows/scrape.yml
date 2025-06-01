@@ -24,8 +24,15 @@ jobs:
       - name: 🏃 Run scraper
         run: npm start
 
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
       - name: 📤 Upload CSV artifact
-        uses: actions/upload-artifact@v4
+        uses: ncipollo/release-action@v1
+        if: success()
         with:
-          name: howlongtobeat_csv
-          path: howlongtobeat_games.csv
+          artifacts: howlongtobeat_games.csv
+          makeLatest: true
+          removeArtifacts: true
+          name: "${{ steps.date.outputs.date }}"
