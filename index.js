@@ -8,6 +8,8 @@ const __dirname = import.meta.dirname;
 const outputPath = path.join(__dirname, 'howlongtobeat_games.csv');
 const CONCURRENCY = os.cpus().length;
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+let pagesFetched = 0;
+let gamesProcessed = 0;
 
 const headers = {
   'Referer': 'https://howlongtobeat.com',
@@ -88,7 +90,14 @@ const writeRowToCSV = (row, isFirstRow = false) => {
     console.log(`🔄 Fetching ${totalPages} pages concurrently...`);
     const pagePromises = [];
     for (let i = 1; i <= totalPages; i++) {
-      pagePromises.push(limit(() => fetchPage(i)));
+      pagePromises.push(limit(async () => {
+        const result = await fetchPage(i);
+        pagesFetched++;
+        if (pagesFetched % 50 === 0 || pagesFetched === totalPages) {
+          console.log(`📦 Fetched ${pagesFetched}/${totalPages} pages`);
+        }
+        return result;
+      }));
     }
 
     const allPages = await Promise.all(pagePromises);
@@ -110,7 +119,10 @@ const writeRowToCSV = (row, isFirstRow = false) => {
         game.comp_100
       ];
       writeRowToCSV(row, false);
-      console.log(`✅ ${game.game_name}`);
+      gamesProcessed++;
+      if (gamesProcessed % 100 === 0 || gamesProcessed === allGames.length) {
+        console.log(`🎮 Processed ${gamesProcessed}/${allGames.length} games`);
+      }
     }));
 
     await Promise.all(gameFetchPromises);
