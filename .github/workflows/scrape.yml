@@ -3,7 +3,7 @@ name: Run HLTB Scraper and Upload CSV
 on:
   workflow_dispatch:  # allows manual trigger
   schedule:
-    - cron: '0 6 * * 1'  # every Monday at 06:00 UTC
+    - cron: '0 1 * * 0'  # every Sunday at 01:00 UTC
 
 jobs:
   scrape:

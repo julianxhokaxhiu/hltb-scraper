@@ -49,4 +49,4 @@ You'll start to see a new file `howlongtobeat_games.csv` being generated in the 
 
 You can find weekly snapshots under the [Releases](https://github.com/julianxhokaxhiu/hltb-scraper/releases) section.
 
-The workflow is scheduled to run weekly every Monday.
+The workflow is scheduled to run weekly every Sunday at 01:00 UTC.
