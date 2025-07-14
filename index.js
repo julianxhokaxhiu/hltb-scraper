@@ -44,7 +44,7 @@ const baseBody = {
 
 const fetchPage = async (pageNum) => {
   const body = JSON.stringify({ ...baseBody, searchPage: pageNum });
-  const response = await fetch('https://howlongtobeat.com/api/seek/d4b2e330db04dbf3', {
+  const response = await fetch('https://howlongtobeat.com/api/seek/6e17f7a193ef3188', {
     method: 'POST',
     headers,
     body
