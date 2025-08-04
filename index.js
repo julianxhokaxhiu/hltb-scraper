@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import process from 'process';
 
 const __dirname = import.meta.dirname;
 const outputPath = path.join(__dirname, 'howlongtobeat_games.csv');
@@ -130,5 +131,6 @@ const writeRowToCSV = (row, isFirstRow = false) => {
 
   } catch (error) {
     console.error("❌ Error:", error);
+    process.exit(1);
   }
 })();
