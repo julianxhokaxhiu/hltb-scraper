@@ -55,7 +55,7 @@ const fetchPage = async (pageNum) => {
   return response.json();
 };
 
-const fetchSteamIdFromHtml = async (gameId) => {
+const fetchDataFromGameId = async (gameId) => {
   await delay(Math.random() * 100); // 0–100ms delay
   const url = `https://howlongtobeat.com/game/${gameId}`;
 
@@ -67,10 +67,10 @@ const fetchSteamIdFromHtml = async (gameId) => {
     if (!match || match.length < 2) throw new Error(`No __NEXT_DATA__ for game ${gameId}`);
 
     const nextData = JSON.parse(match[1]);
-    return nextData?.props?.pageProps?.game?.data?.game[0]?.profile_steam || null;
+    return nextData?.props?.pageProps?.game?.data?.game[0] || null;
 
   } catch (err) {
-    console.warn(`⚠️ Steam ID fetch failed for game ${gameId}: ${err.message}`);
+    console.warn(`⚠️ Fetch failed for game ${gameId}: ${err.message}`);
     return null;
   }
 };
@@ -111,15 +111,17 @@ const writeRowToCSV = (row, isFirstRow = false) => {
     // Fetch all Steam IDs in parallel
     console.log(`🚀 Fetching Steam IDs using ${CONCURRENCY} threads...`);
     const gameFetchPromises = allGames.map(game => limit(async () => {
-      const steamId = await fetchSteamIdFromHtml(game.game_id);
-      const row = [
-        steamId,
-        game.game_name,
-        game.comp_main,
-        game.comp_plus,
-        game.comp_100
-      ];
-      writeRowToCSV(row, false);
+      const gameData = await fetchDataFromGameId(game.game_id);
+      if (gameData) {
+        const row = [
+          gameData.profile_steam,
+          gameData.game_name,
+          gameData.comp_main,
+          gameData.comp_plus,
+          gameData.comp_100
+        ];
+        writeRowToCSV(row, false);
+      }
       gamesProcessed++;
       if (gamesProcessed % 100 === 0 || gamesProcessed === allGames.length) {
         console.log(`🎮 Processed ${gamesProcessed}/${allGames.length} games`);
