@@ -23,7 +23,7 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
 
       - name: 📦 Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: 🏃 Run scraper
         run: npm start
