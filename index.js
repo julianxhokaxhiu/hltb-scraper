@@ -11,6 +11,7 @@ const CONCURRENCY = os.cpus().length;
 const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 let pagesFetched = 0;
 let gamesProcessed = 0;
+let authToken = "";
 
 const headers = {
   'Referer': 'https://howlongtobeat.com',
@@ -22,6 +23,7 @@ const headers = {
 const baseBody = {
   searchType: "games",
   searchTerms: [""],
+  searchPage: 1,
   size: 20,
   searchOptions: {
     games: {
@@ -43,14 +45,27 @@ const baseBody = {
   useCache: true
 };
 
+const refreshToken = async() => {
+  console.log("🧭 Refreshing auth token...");
+  const res = await (await fetch('https://howlongtobeat.com/api/search/init?t='+Date.now(), { headers })).json();
+  authToken = res.token;
+}
+
 const fetchPage = async (pageNum) => {
   const body = JSON.stringify({ ...baseBody, searchPage: pageNum });
-  const response = await fetch('https://howlongtobeat.com/api/locate/45b48b2d1685d24b', {
-    method: 'POST',
-    headers,
-    body
-  });
-
+  const doSearch = async(token) => {
+    return await fetch('https://howlongtobeat.com/api/search', {
+      method: 'POST',
+      headers: { ...headers, ...{"x-auth-token": token} },
+      body
+    });
+  }
+  
+  let response = await doSearch(authToken);
+  if (response.status == 403) {
+    await refreshToken();
+    response = await doSearch(authToken);
+  }
   if (!response.ok) throw new Error(`Failed to fetch page ${pageNum}: ${response.status}`);
   return response.json();
 };
@@ -82,6 +97,7 @@ const writeRowToCSV = (row, isFirstRow = false) => {
 
 (async () => {
   try {
+    await refreshToken();
     console.log("🧭 Fetching page 1 to get total page count...");
     const firstPage = await fetchPage(1);
     const totalPages = firstPage.pageTotal;
