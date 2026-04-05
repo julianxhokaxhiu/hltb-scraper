@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import process from 'process';
+import util from 'util';
 
 const __dirname = import.meta.dirname;
 const outputPath = path.join(__dirname, 'howlongtobeat_games.csv');
@@ -12,12 +13,14 @@ const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 let pagesFetched = 0;
 let gamesProcessed = 0;
 let authToken = "";
+let hpKey = "";
+let hpVal = "";
 
 const headers = {
   'Referer': 'https://howlongtobeat.com',
   'Origin': 'https://howlongtobeat.com',
   'Content-Type': 'application/json',
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:145.0) Gecko/20100101 Firefox/145.0'
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:149.0) Gecko/20100101 Firefox/149.0'
 };
 
 const baseBody = {
@@ -47,24 +50,30 @@ const baseBody = {
 
 const refreshToken = async() => {
   console.log("🧭 Refreshing auth token...");
-  const res = await (await fetch('https://howlongtobeat.com/api/finder/init?t='+Date.now(), { headers })).json();
+  const res = await (await fetch('https://howlongtobeat.com/api/find/init?t='+Date.now(), { headers })).json();
   authToken = res.token;
+  hpKey = res.hpKey;
+  hpVal = res.hpVal;
 }
 
 const fetchPage = async (pageNum) => {
-  const body = JSON.stringify({ ...baseBody, searchPage: pageNum });
-  const doSearch = async(token) => {
-    return await fetch('https://howlongtobeat.com/api/finder', {
+  const body = JSON.stringify({ ...baseBody, searchPage: pageNum, [hpKey]: hpVal });
+  const doSearch = async(token, hp_key, hp_val) => {
+    return await fetch('https://howlongtobeat.com/api/find', {
       method: 'POST',
-      headers: { ...headers, ...{"x-auth-token": token} },
+      headers: { ...headers, ...{
+        "x-auth-token": token,
+        "x-hp-key": hp_key,
+        "x-hp-val": hp_val,
+      }},
       body
     });
   }
-  
-  let response = await doSearch(authToken);
+
+  let response = await doSearch(authToken, hpKey, hpVal);
   if (response.status == 403) {
     await refreshToken();
-    response = await doSearch(authToken);
+    response = await doSearch(authToken, hpKey, hpVal);
   }
   if (!response.ok) throw new Error(`Failed to fetch page ${pageNum}: ${response.status}`);
   return response.json();
