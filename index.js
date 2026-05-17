@@ -49,7 +49,7 @@ const baseBody = {
 
 const refreshToken = async() => {
   console.log("🧭 Refreshing auth token...");
-  const res = await (await fetch('https://howlongtobeat.com/api/find/init?t='+Date.now(), { headers })).json();
+  const res = await (await fetch('https://howlongtobeat.com/api/bleed/init?t='+Date.now(), { headers })).json();
   authToken = res.token;
   hpKey = res.hpKey;
   hpVal = res.hpVal;
@@ -58,7 +58,7 @@ const refreshToken = async() => {
 const fetchPage = async (pageNum) => {
   const body = JSON.stringify({ ...baseBody, searchPage: pageNum, [hpKey]: hpVal });
   const doSearch = async(token, hp_key, hp_val) => {
-    return await fetch('https://howlongtobeat.com/api/find', {
+    return await fetch('https://howlongtobeat.com/api/bleed', {
       method: 'POST',
       headers: { ...headers, ...{
         "x-auth-token": token,
