@@ -1,3 +1,7 @@
+# ARCHIVED! Since the original project using this repository has been archived as well, there's no reason for me to keep maintaining it. Feel free to use it as a reference for future projects. Thanks to https://howlongtobeat.com as well for being collaborative as well during all this time.
+
+---
+
 # HLTB Scraper
 
 This simple project uses https://howlongtobeat.com undocumented APIs from the service to build a CSV with the following information:
